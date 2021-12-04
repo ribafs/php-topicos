@@ -1,0 +1,25 @@
+    public function combo($tableFk, $idFk, $displayFk, $selected, $tablePk,$id=null){ // $sql='select id,descricao from produtos'
+        $sql = 'select '.$idFk.', '.$displayFk.' from '.$tableFk;
+        $smt = $this->pdo->prepare($sql);       // $sql do update = 'select produto_id,descricao from produtos',$produto_id
+        $smt->execute();
+        $data = $smt->fetchAll();
+
+        $sql2 = 'select * from '.$tablePk. ' where id = :id';
+        $smt2 = $this->pdo->prepare($sql2);
+        $smt2->bindValue(':id', $id, PDO::PARAM_INT); // No select e no delete basta um bindValue, mas isso quando é exigido por :id
+        $smt2->execute();
+        $data2 = $smt2->fetch();
+        $cat = $data2['category_id'];
+
+        $combo = "\n\t\t<tr><td><b>".ucfirst($selected)."</b></td><td><select name=".$selected." class=\"form-control\">";
+        foreach ($data as $row){
+            if($cat == $row["$idFk"]){
+                $combo .= "\t\t".'<option value='.$row["$idFk"].' selected>'.$row["$displayFk"].'</option>'."\n";
+            }else{
+                $combo .= "\t\t".'<option value='.$row["$idFk"].'>'.$row["$displayFk"].'</option>'."\n";
+            }
+        }
+        $combo .= "\t\t".'</select></td>'."\n";
+        return $combo;
+    }
+

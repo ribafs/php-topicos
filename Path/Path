@@ -1,0 +1,36 @@
+# Paths relativos e absolutos
+Tanto na web quanto em diretórios
+
+## Para a web
+
+Um exemplo de path absoluto
+
+Tenho a web em /var/www/html e minha aplicação em /var/www/html/app
+
+Na minha aplicação eu tenho o arquivo conexao.php no raiz. O path absoluto deste aquivo está abaixo, mas não podemos acessar desta forma no aplicativo. Veja abaixo que usaremos a função dirname para isso
+/var/www/html/app/conexao.php
+
+Tenho também
+/var/www/html/app/classes
+
+O arquivo /var/www/html/app/classes/Crud.php pode incluir conexao.php de forma absoluta ou relativa
+
+Em /var/www/html/app/classes/Crud.php
+
+## Relativo
+
+Eu estando na pasta app/classes, o path relativo para Crud.php seria ./Crud.php
+
+./ - diretório atual
+../ um nível acima
+../.. dois níveis acima
+
+## De forma absoluta
+
+require dirname(__DIR__).'/conexao.php';// Este require não pode ter o once, senão não mostra o conteúdo pela segunda vez
+
+## De forma relativa
+
+require '../conexao.php'; // Estando em app/classes volta um nível e chama conexao.php
+
+

@@ -1,0 +1,16 @@
+O Protocolo de Transferência de Hipertexto (HTTP) foi concebido para permitir a comunicação entre clientes e servidores.
+
+O HTTP funciona como um protocolo de resposta a solicitações (request-response) entre um cliente e um servidor.
+
+Métodos do HTTP
+    • GET 
+    • POST 
+    • PUT 
+    • HEAD 
+    • DELETE 
+    • PATCH 
+    • OPTIONS 
+
+Os mais comuns são POST e GET
+
+

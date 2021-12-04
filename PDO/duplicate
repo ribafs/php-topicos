@@ -1,0 +1,8 @@
+try {
+  $stmt = $pdo->prepare("INSERT INTO myTable (name, age) VALUES (?, ?)");
+  $stmt->execute([$_POST['name'], 29]);
+  $stmt = null;
+} catch(Exception $e) {
+  if($e->errorInfo[1] === 1062) echo 'Duplicate entry';
+}
+

@@ -1,0 +1,54 @@
+## Constantes Mágicas
+
+print __DIR__; // /var/www/html
+
+dirname(__DIR__) // /var/www
+
+print dirname(dirname(__DIR__));// /var
+dirname() volta um nível
+
+echo basename(__DIR__); // html
+
+dirname(__FILE__)
+
+print __FILE__; // Path completo para o arquivo atual
+
+
+echo DIRECTORY_SEPARATOR; // / no linux e \ no windows
+
+
+## Funções
+
+$parts = pathinfo("/var/www/html/index.php");
+echo $parts["dirname"] . "<br>"; // /var/www/html
+echo $parts["basename"] . "<br>"; // index.php
+echo $parts["filename"] . "<br>"; // index
+echo $parts["extension"] . "<br>"; // php
+
+echo realpath(""); // /var/www/html
+echo realpath("./"); // /var/www/html
+echo realpath("../"); // /var/www
+echo realpath("../.."); // /var
+echo realpath("../../.."); // /
+
+
+realpath(dirname(__FILE__) // Até o arquivo atual
+
+echo getcwd(); // Diretório atual. Similar a print dirname(__FILE__);
+
+----------
+Para a Web
+
+print $_SERVER['DOCUMENT_ROOT']; // /var/www/html ou c:\xampp\htdocs (a pasta web)
+
+print $_SERVER['REQUEST_URI']; // /app/conexao.php (o arquivo atual)
+
+print $_SERVER['HTTP_HOST']; // localhost
+
+echo $_SERVER['SERVER_NAME'];// localhost
+
+echo $_SERVER['SCRIPT_FILENAME'];// path completo do script atual
+
+echo $_SERVER['PHP_SELF'];// somente o arquivo na referida pasta do app
+
+https://www.php.net/manual/pt_BR/reserved.variables.server.php

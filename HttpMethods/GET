@@ -1,0 +1,35 @@
+GET Um array associativo de variáveis passadas para o script atual via o método HTTP GET. 
+
+Envia as variáveis para o servidor através da URL.
+
+Tem o limite do tamanho da URL controlado.
+
+O método GET envia dados para o servidor através da URL com pares de chave e valor
+
+/test/demo_form.php?name1=value1&name2=value2 
+
+- As requisições do GET podem ser armazenados em cache 
+ permanecem no histórico do navegador 
+ podem ser marcados nos bookmarks 
+ nunca devem ser utilizados quando se trata de dados sensíveis 
+ têm restrições de comprimento 
+ são utilizados apenas para solicitar dados (não para modificar) 
+
+Exemplo
+
+<form action="<?php echo $_SERVER['PHP_SELF'];?>" method="get">
+Name: <input type="text" name="name"><br>
+E-mail: <input type="text" name="email"><br>
+<input type="submit">
+</form>
+
+</body>
+</html>
+<?php
+if(isset($_GET['name'])){
+    print $_GET['name'].'<br>';
+    print $_GET['email'].'<br>';
+}
+?>
+
+

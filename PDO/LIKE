@@ -1,0 +1,23 @@
+$stmt = $pdo->prepare("SELECT id, name, age FROM myTable WHERE name LIKE %?%");
+
+$search = "%{$_POST['search']}%";
+$stmt = $pdo->prepare("SELECT id, name, age FROM myTable WHERE name LIKE ?");
+$stmt->execute([$search]);
+$arr = $stmt->fetchAll();
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+
+if(isset($_GET['keyword'])){
+    $keyword=$_GET['keyword'];
+
+    $sql = "select * from clientes WHERE nome LIKE :keyword order by id";
+    $sth = $pdo->prepare($sql);
+    $sth->bindValue(":keyword", $keyword."%");
+    $sth->execute();
+	//$nr = $sth->rowCount();
+    $rows =$sth->fetchAll(PDO::FETCH_ASSOC);
+}
+
+

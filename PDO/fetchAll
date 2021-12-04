@@ -1,0 +1,19 @@
+$stmt = $pdo->prepare("SELECT * FROM myTable WHERE id <= ?");
+$stmt->execute([5]);
+$arr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+ou
+$arr = [];
+$stmt = $pdo->prepare("SELECT * FROM myTable WHERE id <= ?");
+$stmt->execute([5]);
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+  $arr[] = $row;
+}
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+$data = pdo($pdo, "SELECT * FROM users WHERE salary > ?", [$salary])->fetchAll();

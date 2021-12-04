@@ -1,0 +1,58 @@
+POST é Um array associativo de variáveis passados para o script atual via método HTTP POST quando utilizado application/x-www-form-urlencoded ou multipart/form-data como valor do cabeçalho HTTP Content-Type na requisição. 
+
+O método POST é mais indicado para oeprações seguras, pois não envia as variáveis para o servidor pela URL.
+
+Os dados enviados pelo método POST são arzenados no body re request do HTTP
+
+As requisições enviadas via POST nunca são armazenados em cache 
+ não permanecem no histórico do navegador 
+ não podem ser marcados 
+ não têm restrições quanto ao comprimento dos dados 
+
+O maior tamanho das variáveis enviadas para o servidor depende das configurações do PHP, especificamente de
+post_max_size
+
+Que pode ser alterada no php.ini ou no .htaccess
+php_value post_max_size 20M
+
+Ainda no ini_set
+ini_set( 'post_max_size', '20M' )
+
+
+PHP Superglobal - $_POST
+
+Variável superglobais são disponível em todos os escopos
+
+Exemplo
+
+<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
+  Nome: <input type="text" name="fnome">
+  <input type="submit">
+</form>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // collect value of input field
+  $nome = $_POST['fnome'];
+  if (empty($nome)) {
+    echo "Name is empty";
+  } else {
+    echo $nome;
+  }
+}
+?>
+
+echo $_SERVER['PHP_SELF']; - Faz o form chamar a si mesmo e não outro arquivo
+
+<?php
+//Displays the data that was received from the input box named name in the form
+if(isset($_POST['name'])){
+print $_POST['name'];
+}
+?>      
+
+<form action="1.php" method=POST>
+        Name:<br><input type="text" name="name"><br>
+        <input type="submit" value="Submit">
+</form>                        
+

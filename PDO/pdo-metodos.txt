@@ -1,0 +1,98 @@
+
+		/**
+		* @Method responsável por fazer o insert utilizando PDO
+		* @method: insert
+		* @param array $dados
+		* @param string $tabela
+		* @return boolean
+		*/
+		public function insert( Array $dados, $tabela = NULL )
+		{
+			//preparando dados de entrada do insert
+			$tabela = ($tabela == NULL ? $this->_tabela : $tabela);
+			$campos = implode( ", ", array_keys( $dados ) );
+			$valores = "'".implode( "', '", array_values( $dados ) )."'";
+			
+			//salvando
+			//die(" INSERT INTO {$tabela} ({$campos}) VALUES ({$valores}) ");
+			$return = $this->db->query(" INSERT INTO {$tabela} ({$campos}) VALUES ({$valores}) ");
+			
+			//retorna boolean
+			return ( $return == TRUE ? TRUE : FALSE );
+		}
+		
+		/**
+		* @Method responsável por retornar o select utilizando PDO
+		* @method: read
+		* @param string $where
+		* @param inteiro $limit
+		* @param inteiro $offset
+		* @param string $orderby
+		* @param string $tabela
+		* @param string $select
+		* @param string $distinct
+		* @return array or FALSE
+		*/
+		public function read( $where = NULL, $limit = NULL, $offset = NULL, $orderby = NULL, $tabela = NULL, $select = NULL, $distinct = NULL )
+		{
+			//preparando dados para consulta
+			$where 		= ( $where 		!= NULL ? "WHERE {$where}" 		: "" );
+			$limit 		= ( $limit 		!= NULL ? "LIMIT {$limit}" 		: "" );
+			$offset 	= ( $offset 	!= NULL ? "OFFSET {$offset}" 	: "" );
+			$orderby 	= ( $orderby 	!= NULL ? "ORDER BY {$orderby}" : "" );
+			$tabela 	= ( $tabela 	== NULL ? $this->_tabela 		: $tabela );
+			$select 	= ( $select 	!= NULL ? "{$select}" 			: "*" );
+			$distinct 	= ( $distinct 	!= NULL ? "DISTINCT" 			: "" );
+			
+			//consulta
+			//echo "<pre>"; print_r(" SELECT {$distinct} {$select} FROM {$tabela} {$where} {$orderby} {$limit} {$offset} "); exit;
+			$return = $this->db->query(" SELECT {$distinct} {$select} FROM {$tabela} {$where} {$orderby} {$limit} {$offset} ");
+			$return->setFetchMode(PDO::FETCH_ASSOC);
+			
+			//retorna
+			return ( $return == TRUE ? $return->fetchAll() : FALSE );
+		} 
+		
+		/**
+		* @Method responsável por fazer o update utilizando PDO
+		* @method: update
+		* @param string $where
+		* @param array $dados
+		* @param string $tabela
+		* @return boolean
+		*/
+		public function update( $where, Array $dados, $tabela = NULL  )
+		{
+			//tratando dados para update
+			foreach( $dados as $indice => $valor )
+			{
+				$campos[] = "{$indice} = '{$valor}'";
+			}
+			
+			$campos = implode ( ", ", $campos );
+			$tabela = ($tabela == NULL ? $this->_tabela : $tabela);
+			//print_r(" UPDATE {$tabela} SET {$campos} WHERE {$where} ");exit;
+			$return = $this->db->query(" UPDATE {$tabela} SET {$campos} WHERE {$where} ");
+			
+			//retorna
+			return ( $return == TRUE ? TRUE : FALSE );
+		}
+		
+		/**
+		* @Method responsável por fazer o delete utilizando PDO
+		* @method: delete
+		* @param string $where
+		* @param string $tabela
+		* @return boolean (quantidade de registros afetados)
+		*/
+		public function delete( $where, $tabela = NULL )
+		{
+			$tabela = ($tabela == NULL ? $this->_tabela : $tabela);
+			$return = $this->db->exec(" DELETE FROM {$tabela} WHERE {$where} ");
+			
+			//retorno
+			return $return;
+		}
+
+https://gist.github.com/grsouzafilho/7207710
+

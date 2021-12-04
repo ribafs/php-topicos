@@ -1,0 +1,15 @@
+Paths absolutos começam com / ou c:\
+Relativos não começam com / ou usam ./
+
+Criar um arquivo com constantes e chamar as constantes durante o aplicativo
+
+Exemplos:
+
+define('ROOT_PATH', dirname(__DIR__) . '/');
+define('APP_NAME',"beta");  
+define('HTTP_SERVER', 'http://localhost/'); 
+define('SITE_NAME', 'http://localhost/');   
+define('DOCUMENT_ROOT',$_SERVER['DOCUMENT_ROOT'].APP_NAME); 
+define('ABSPATH', dirname(__FILE__) . '/')
+
+

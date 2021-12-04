@@ -1,0 +1,410 @@
+Impedir listagem de diretório
+
+Options -Indexes
+DirectoryIndex index.html index.php /index.php
+
+
+Permitir listagem de diretório
+
+Options +Indexes
+DirectoryIndex index.html index.php /index.php
+
+
+Bloquear alguns exploits comuns
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ ///.*\ HTTP/ [NC,OR]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\?\=?(http|ftp|ssl|https):/.*\ HTTP/ [NC,OR]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\?\?.*\ HTTP/ [NC,OR]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.(asp|ini|dll).*\ HTTP/ [NC,OR]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*\.(htpasswd|htaccess|aahtpasswd).*\ HTTP/ [NC]
+RewriteRule .? - [F,NS,L]
+
+
+Confira 20 dicas e truques extremamente úteis do .htaccess
+Marcos A.T. Silva
+15 de janeiro de 2015
+
+O .htaccess é, basicamente, um arquivo de configuração utilizado em servidores web, como oApache, por exemplo (seu nome vem de “hypertext access“). O arquivo funciona a nível de diretórios e permite que administradores gerenciem e manipulem configurações e acessos de forma descentralizada.
+
+Inserido em modo oculto (com a devida adição do “.” à frente do nome) nos diretórios (como por exemplo a pasta raiz “public_html” de cada website), o .htaccess força o servidor a interpretar suas instruções prioritariamente, desconsiderando, portanto, nestes casos, quaisquer configurações globais.
+
+As configurações presentes no arquivo, vale lembrar, são aplicadas ao diretório no qual ele se encontra e também a todos os seus subdiretórios, caso existam. Vale também lembrar que a presença de um outro .htaccess em um subdiretório anula a ação do que se encontra um nível acima. Ou seja, o .htaccess do subdiretório passa a valer para o mesmo e também para todas as suas subpastas. E assim por diante. É sempre bom ficarmos atentos a estes detalhes.
+
+Servidores
+
+Usando arquivos .htaccess, podemos, por exemplo, proteger diretórios com senhas, prevenir hotlinks (utilização de imagens hospedadas no seu servidor em outros locais, indevidamente e gastando a sua banda), configurar URLs amigáveis, etc. Trata-se de um arquivo bastante útil, e neste artigo vamos dar a você uma série de exemplos de utilização. 20 exemplos, para ser mais preciso.
+Criando um arquivo .htaccess
+
+Criar um arquivo .htaccess, aliás, é bastante simples. Tudo o que você precisa é de um editor de texto qualquer. Pode ser o PSPad, o Notepad++ ou até mesmo o Bloco de Notas padrão do Windows. Crie um novo arquivo e então salve-o como “.htaccess” (sem aspas, obviamente, e com o ponto antes do nome).
+
+Dependendo do programa e do sistema operacional que você utilizar para a criação do arquivo, pode acontecer de ser gerado um arquivo chamado “.htaccess.txt”. Isto está errado, claro, mas é fácil consertarmos o “erro”: basta renomear o tal arquivo, removendo dele os caracteres desnecessários (no caso, “.txt“).
+
+E agora vamos às dicas de utilização, lembrando antes que várias delas exigem a utilização do módulo “mod_rewrite” no servidor. Verifique antes de tudo se ele se encontra habilitado no Apache.
+1) Bloqueando hotlinks em imagens
+
+Para evitar que outros utilizem imagens hospedadas em seu servidor, “linkando” diretamente e assim gastando a sua banda, use o seguinte código em seu .htaccess:
+
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?meusite.com [NC]
+RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+
+Ao usar o código acima, qualquer site que tentar utilizar suas imagens será impedido de o fazer. Não se esqueça de substituir “meusite.com” com a URL e a TLD corretas. Por exemplo: “codigofonte.com.br/” , “meublog.net/”, etc.
+
+Repare também que o código acima previne hotlinks em imagens com as extensões .jpg , .jpeg , .png e .gif . Você pode alterar também esta linha do código, adicionando novos tipos de arquivos, removendo, etc. Apenas lembre-se de respeitar a sintaxe.
+
+Caso você deseje forçar a exibição de uma outra imagem no site “ladrão de imagens”, como por exemplo uma imagem contendo um alerta, com a sua URL, adicione a linha abaixo ao final do arquivo, logo abaixo de “RewriteRule \.(jpg|jpeg|png|gif)$ – [NC,F,L]”:
+
+RewriteRule .*\.(jpg|jpeg|png|gif)$ /imagens/imagemalerta.jpg [L]
+
+Lembre-se de que neste caso a imagem “imagemalerta.jpg” deverá existir dentro do diretório “/imagens/”, em seu servidor web.
+
+Se ao invés de exibir uma outra imagem você desejar exibir simplesmente um erro 403 (Forbidden), utilize o código abaixo no lugar:
+
+RewriteRule .*\.(jpg|jpeg|png|gif)$ - [F]
+
+2) Protegendo seu arquivo .htaccess
+
+Seguro morreu de velho, não é? Portanto, por que não proteger o arquivo .htaccess? Basta adicionar o seguinte código a ele mesmo:
+
+<files ~ "^.*\.([Hh][Tt][Aa])">
+order allow,deny
+deny from all
+satisfy all
+</files>
+
+Protecao
+3) Usando páginas de erro personalizadas
+
+Para evitar que os visitantes caiam em páginas de erro padrão do Apache ou então nas famosas “404 Not Found” padrão, por exemplo (caso tentem acessar uma URL inexistente), você pode adicionar a seguinte linha ao seu .htaccess:
+ErrorDocument 404 /erros/notfound.html
+1
+	
+ErrorDocument 404 /erros/notfound.html
+
+Observe que a página “notfound.html” deve existir dentro do diretório “/erros/”. Você pode personalizá-la como bem entender, adicionando links para sua página principal, formulário de contato, etc.
+
+Para cobrir outros tipos de erro, utilize também os códigos abaixo:
+
+ErrorDocument 400 /erros/badrequest.html
+ErrorDocument 401 /erros/authreqd.html
+ErrorDocument 403 /erros/forbid.html
+ErrorDocument 500 /erros/serverr.html
+
+Da mesma maneira, não se esqueça de criar as páginas necessárias e enviá-las para o diretório “/erros/”, conforme explicado acima.
+
+4) Compressão via .htaccess
+
+Caso você deseje utilizar compressão GZIP no servidor, para economizar banda, para “deixar os motores de busca mais felizes”, etc, insira o código abaixo em seu .htaccess, lembrando que para que ele funcione, o módulo mod_gzip deve estar habilitado no Apache:
+
+<ifmodule mod_gzip.c="">
+mod_gzip_on       Yes
+mod_gzip_dechunk  Yes
+mod_gzip_item_include file      \.(html?|css|js|php|pl)$
+mod_gzip_item_include handler   ^cgi-script$
+mod_gzip_item_include mime      ^text/.*
+mod_gzip_item_include mime      ^application/x-javascript.*
+mod_gzip_item_exclude mime      ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifmodule>
+
+Já para utilizar a compressão com o mod_deflate (não se esqueça de que este módulo deve estar habilitado no Apache), utilize o código abaixo:
+
+<ifmodule mod_deflate.c="">
+<filesmatch .(.jpg|.gif|.png|js|phpcss)$="">
+SetOutputFilter DEFLATE
+</filesmatch>
+</ifmodule>
+
+5) Evitando a listagem de diretórios
+
+Você pode também utilizar o .htaccess para evitar a listagem de diretórios. Para evitar que o conteúdo de um diretório seja exibido quando algum usuário o acessar (por exemplo, quando alguém acessa “www.seusite.com.br/nomedapasta” ou “www.seusite.com.br/imagens”.
+
+Use o snippet abaixo:
+
+Options -Indexes
+
+
+Permitindo a listagem de diretórios
+	
+Options +Indexes
+
+6) Controlando o acesso a arquivos e diretórios
+
+Digamos que você deseja evitar que terceiros acessem determinados arquivos e pastas em seu site. Você possui um script qualquer instalado, por exemplo, e deseja evitar que visitantes acessem suaa pasta “includes”.
+
+Proibido
+
+Por outro lado, você precisa garantir que qualquer página do site em questão possa “chamar” sem problemas os arquivos contidos nesta pasta. Basta, então, adicionar um .htaccess com o seguinte conteúdo na tal pasta, no caso, a “includes”:
+
+# Acesso restrito!
+deny from all
+
+Você pode também limitar o acesso apenas a uma determinada faixa de IPs:
+
+# Acesso restrito!
+order deny,allow
+deny from all
+allow from 192.168.0.1/24
+
+Não se esqueça de alterar a faixa de IPs conforme sua necessidade.
+
+E você pode também banir um determinado IP. Algum crawler insistente, por exemplo, que esteja sobrecarregando o sistema, ou então algum IP que você já sabe ser indesejado. Utilize o código abaixo:
+
+# Proibido...
+order allow,deny
+deny from 74.184.25.218
+allow from all
+
+Altere o IP conforme sua necessidade.
+7) Reescrevendo URLs – Tornando-as amigáveis
+
+Com .htaccess, também podemos reescrever URLs. Podemos torná-las mais amigáveis, tanto para os motores de busca quanto para os visitantes. Digamos que você possua uma loja virtual e nela venda diversos produtos. Digamos, agora, que suas URLs possuem a seguinte estrutura:
+
+    http://www.meusite.com/produto.php?id=12
+
+Ora, é muito mais fácil, simples e amigável trabalhar com a estrutura do exemplo abaixo:
+
+    http://www.meusite.com/produto-12.html
+
+Confira os exemplos abaixo e utilize os que se adequarem às suas necessidades, lembrando sempre de realizar as alterações nas URLs, nos caminhos, etc:
+
+Reescrevendo produto.php?id=12 para produto-12.html:
+
+RewriteEngine on
+RewriteRule ^produto-([0-9]+)\.html$ produto.php?id=$1
+
+Reescrevendo produto.php?id=12 para produto/hub-usb/12.html:
+
+RewriteEngine on
+RewriteRule ^produto/([a-zA-Z0-9_-]+)/([0-9]+)\.html$ produto.php?id=$2
+
+Redirecionando URLs sem www para URLs com www:
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^seudominio.com
+RewriteRule ^ http://www.seudominio.com%{REQUEST_URI} [L,R=301]
+
+Redirecionando URLs com www para URLs sem www:
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www.(.*) [NC]
+RewriteRule ^(.*) http://%1/$1 [R=301,L]
+
+8) Removendo extensões de arquivos das URLs
+
+Você pode também remover as extensões dos arquivos das URLs com um arquivo .htaccess. Por exemplo, ao invés de seu visitante visualizar algo como contato.php na barra de endereços do navegador, ele pode visualizar simplesmente “contato”.
+
+Use o código abaixo em um arquivo .htaccess:
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html
+
+No exemplo acima, a extensão .html será removida/escondida. Você pode também usar o mesmo snippet para esconder outras extensões de arquivos, como por exemplo .php . Basta realizar as devidas substituições.
+
+www
+
+9) Protegendo um diretório com senha
+
+Uma das funcionalidades mais usadas e bacanas do .htaccess: proteger um diretório qualquer com senha. Para acessar o diretório em questão (e, consequentemente, tudo o que estiver dentro dele), o visitante deverá informar um “usuário” e uma “senha”.
+
+Observe que aqui deveremos utilizar dois arquivos: o .htaccess e o arquivo que conterá as senhas, o .htpasswd . O .htaccess você já sabe como criar, e para criar o arquivo das senhas, o .htpasswd , utilize este gerador online (isto porque as senhas devem ser transformadas em hashs MD5).
+
+No site “Htpasswd Generator”, informe o “usuário” (username) e a “senha” (password). Em seguida clique no botão “Create .htpasswd file”. Repita o processo quantas vezes forem necessárias para transformar todas as senhas desejadas em hashs MD5.
+
+O gerador fornece o resultado logo em seguida, e é isto que você deve copiar e colar no arquivo .htpasswd (um conjunto de usuário e senha por linha). Cada conjunto de “usuário” e “senha” é mais ou menos igual ao exemplo abaixo:
+
+teste:$apr1$7KeyxOFe$sEEZhgvhSMKkHQTbXkqjs0
+
+Este procedimento também pode ser realizado através do SSH, vale lembrar. Use o comando abaixo no prompt após se conectar ao servidor:
+
+htpasswd -c /home/usuario/.htpasswd nomedousuario
+
+Onde “/home/usuario/” é o diretório onde o arquivo será gerado, e “nomedousuario” é, bem, o nome do usuário. Durante este procedimento você será solicitado a informar uma senha para o usuário em questão.
+
+Para adicionar novos usuários (lembrando que você sempre será solicitado a informar as respectivas senhas), use o comando abaixo:
+
+htpasswd /home/usuario/.htpasswd nomedousuario2
+
+Observe que nos comandos acima, o parâmetro “-c” foi utilizado para criar o arquivo .htpasswd já com um usuário. Já no segundo comando o parâmetro não é necessário, pois estamos adicionando um novo usuário (nomedousuario2) a um arquivo .htpasswd já existente. E assim por diante.
+
+Mas, continuando, após a criação do .htpasswd, envie-o para um diretório acima de sua pasta raiz. Por exemplo, um nível acima de sua pasta “public_html” (/home/usuario/”, digamos).
+
+Vamos agora à criação do .htaccess para a proteção do diretório, ressaltando que este arquivo deve ser enviado para a pasta que vai ser protegida:
+
+AuthType Basic
+AuthName "Acesso Restrito!"
+AuthUserFile /home/usuario/.htpasswd
+Require valid-user
+
+Observe o seguinte:
+
+    AuthName: é uma mensagem que pode ser customizada conforme você desejar. Esta mensagem aparecerá na janela na qual serão soliciados os dados de login;
+    AuthUserFile: caminho absoluto para o arquivo .htpasswd;
+
+Pronto. Seu diretório foi protegido com senha. Lembre-se de realizar as alterações necessárias relativas aos caminhos, nomes de pastas, usuários, senhas, etc.
+
+10) Forçando redirecionamento de http para https (SSL)
+
+RewriteEngine On
+RewriteCond %{HTTPS} !on
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+11) Definindo páginas iniciais padrão
+
+Você pode também definir no .htaccess quais páginas iniciais serão consideradas como páginas padrão/default, como páginas de índice (index):
+
+DirectoryIndex index.html index.php index.html
+
+No exemplo acima, os arquivos index.htm, index.php e index.html serão considerados como páginas de índice.
+
+Por outro lado, caso você deseje ter outro arquivo que não um index.html (ou qualquer outro index) como página inicial, basta utilizar um .htaccess da seguinte forma:
+
+DirectoryIndex empresa.html
+
+No exemplo acima, sua página inicial será o arquivo “empresa.html”. Sempre que um visitante acessar o seu domínio, por exemplo, “www.seusite.com.br”, ele será automaticamente redirecionado para “www.seusite.com.br/empresa.html”.
+
+12) Redirecionamento 301
+
+Se você precisar mudar seu domínio este código é bastante útil. Com ele, você não perderá links internos e externos, visitantes, e também não terá problemas com os motores de busca.
+
+Para redirecionar permanentemente (e também dizer aos motores de busca que trata-se de uma mudança permanente) um domínio inteiro para outro (um novo, por exemplo), utilize no antigo um .htaccess com o código abaixo:
+
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule (.*) http://www.seunovosite.com/$1 [R=301,L]
+
+Não se esqueça de alterar “seunovosite.com” de acordo.
+
+Seguranca
+
+13) Banindo IPs
+
+Digamos que você sofra ataques do tipo brute force, ou tenha problemas com spammers. Vamos imaginar qualquer situação problemática para seu site e/ou servidor, na qual você já tenha identificado os IPs problemáticos. É muito simples bloqueá-los através do .htaccess:
+
+allow from all
+deny from 200.143.89.154
+deny from 67.122.145.60
+deny from 74.14.13.246
+deny from 67.224.175.26
+
+Observe que os IPs informados acima foram inseridos apenas a título de exemplo. Altere conforme sua necessidade. Caso seja necessário informar (bloqueando, assim) mais IPs, basta adicionar novas linhas “deny from”, seguidas do IP. E assim por diante.
+
+14) Forçando downloads de determinados tipos de arquivos
+
+Dependendo do arquivo e das configurações do servidor, este último pode oferecer ao visitante 2 opções após o clique em um link: baixar o arquivo para seu PC ou então abri-lo remotamente (documentos do Word, PDFs, etc).
+
+Para forçar o download, evitando que a opção de escolha apareça para o visitante, utilize o código abaixo:
+
+AddType application/octet-stream .pdf
+AddType application/octet-stream .avi
+AddType application/octet-stream .xls
+
+No exemplo acima, todos os arquivos com extensões .pdf , .avi e .xls serão automaticamente baixados para o computador do visitante sempre que ele clicar nos links a eles correspondentes. Adicione novas linhas e/ou altere os tipos de arquivos conforme suas necessidades.
+
+15) Bloqueando visitantes com base no “referring domain”
+
+Você pode também impedir que determinados visitantes acessem seu site com base no “referring domain”, ou seja, com base no site que “indicou” o seu a eles. Digamos que exista algum link para seu site, por algum motivo, em algum “site duvidoso” na Rússia. Ou qualquer outro motivo, localização, etc:
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} dominioproblematico1.com [NC,OR]
+RewriteCond %{HTTP_REFERER} dominioproblematico2.com [NC,OR]
+RewriteRule .* - [F]
+</ifModule>
+
+Você pode incluir/editar os “domínios problemáticos” conforme suas necessidades, ou até mesmo adicionar mais.
+
+16) Forçando UTF-8
+
+Para evitar problemas de codificação e renderização com seus arquivos .html, por exemplo, você pode incluir o seguinte código em seu .htaccess para forçar o uso da codificação UTF-8:
+
+<FilesMatch ".(htm|html|css|js)$">
+AddDefaultCharset UTF-8
+</FilesMatch>
+
+17) Protegendo a área administrativa do WordPress
+
+Se você utiliza o CMS WordPress, nunca é demais proteger sua área administrativa, prevenindo invasões e ataques. Crie um arquivo .htaccess conforme explicado abaixo e o coloque dentro da pasta /wp-admin/:
+
+<Limit GET POST PUT>
+order deny,allow
+deny from all
+allow from 79.187.22.68
+</Limit>
+
+Note que este é um método de proteção um tanto quanto drástico. Estamos aqui liberando o acesso à área administrativa do WordPress para um único IP. O seu, no caso. Altere o código acima e substitua “79.187.22.68” pelo seu IP. Para descobri-lo, basta acessar este link ou este.
+
+No Windows, você pode também acessar o prompt do DOS e digitar o comando abaixo, seguido de um <ENTER>:
+
+ipconfig
+
+Já no Linux, utilize um dos comandos abaixo, também com um <ENTER> em seguida:
+
+/sbin/ifconfig -a
+
+Ou
+
+ifconfig -a
+
+WordPress
+
+OBS: esta proteção terá também um “custo”. Caso seu IP seja dinâmico, você terá que alterar o .htaccess acima praticamente todos os dias, removendo o IP “velho” e adicionando o “novo”. Mas a segurança extra vale a pena, é claro.
+
+18) Protegendo o arquivo wp-config.php do WordPress
+
+O arquivo wp-config.php do WordPress, localizado na raiz da instalação do sistema, é outro elemento importantíssimo do CMS. Ele guarda, por exemplo, informações da base de dados em utilização (nome do banco, usuário, senha). Isto dentre outros dados críticos.
+
+Desabilitar o acesso a ele também é essencial para manter o seu blog em segurança.
+
+Use o seguinte código:
+
+<files wp-config.php>
+order allow,deny
+deny from all
+</files>
+
+19) Protegendo a pasta wp-content do WordPress
+
+Outra área crítica do WordPress. É na pasta wp-content que se encontram arquivos de temas, de plugins e também os arquivos enviados para o servidor para a devida inserção em postagens, por exemplo (imagens, etc).
+
+Utilize o código abaixo em um arquivo .htacess e o envie para a pasta “/wp-content/”:
+
+Order deny,allow
+Deny from all
+<Files ~ “.(xml|css|jpe?g|png|gif|js)$”>
+Allow from all
+</Files>
+
+O snippet acima fará com que ninguém (um hacker, por exemplo) consiga realizar o upload de outros tipos de arquivos além dos especificados no código.
+
+20) Usando o cache do navegador
+
+Que tal usar um recurso extra para acelerar o tempo de carregamento do site, forçando a utilização do cache do navegador? Assim, os browsers dos visitantes serão capazes de salvar elementos de seu website, de maneira tal que eles não serão baixados novamente e desnecessariamente, a cada novo acesso.
+
+Isto garante economia de banda para o proprietário do site e para o visitante, obviamente:
+
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access 1 year"
+ExpiresByType image/jpeg "access 1 year"
+ExpiresByType image/gif "access 1 year"
+ExpiresByType image/png "access 1 year"
+ExpiresByType text/css "access 1 month"
+ExpiresByType application/pdf "access 1 month"
+ExpiresByType text/x-javascript "access 1 month"
+ExpiresByType application/x-shockwave-flash "access 1 month"
+ExpiresByType image/x-icon "access 1 year"
+ExpiresDefault "access 2 days"
+</IfModule>
+Finalizando
+
+Como você pôde perceber, o .htaccess é uma ferramenta extremamente valiosa. Um “simples” arquivo, que na verdade contém texto puro, trocando em miúdos, mas que é capaz de resolver muitos problemas ou dificuldades do dia a dia.
+
+Uma ferramenta poderosa, importante e muito útil, que deve sempre ser considerada por webmasters e administrador de servidores web.
+
+https://www.codigofonte.com.br/artigos/confira-20-dicas-e-truques-extremamente-uteis-do-htaccess
+
+

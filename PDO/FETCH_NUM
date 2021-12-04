@@ -1,0 +1,14 @@
+$stmt = $pdo->prepare("SELECT first_name, squat, bench_press FROM myTable WHERE weight > ?");
+$stmt->execute([200]);
+$arr = $stmt->fetchAll(PDO::FETCH_NUM);
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+Output:
+[
+  ['Thad', 305, 250], 
+  ['Larry', 225, 180]
+]
+
+Usar $arr[0]

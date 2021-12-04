@@ -1,0 +1,10 @@
+Query - Prepara e executa uma instrução SQL sem placeholders/marcadores de lugar
+
+$dbh = new PDO('mysql:host=localhost;dbname=testes', 'root', 'root');
+
+$sql = 'SELECT nome, email FROM clientes ORDER BY nome';
+foreach ($dbh->query($sql) as $row) {
+    print $row['nome'] . " - ";
+    print $row['email'] . "<hr>";
+}
+

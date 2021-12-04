@@ -1,0 +1,31 @@
+PreparedStatments/declaração preparada
+
+Passos para a criação de um PreparedStatments
+
+Usando ? (interrogações)
+
+$sql = 'insert into authors(first_name, last_name) values(?,?)';
+$statement = $pdo->prepare($sql);
+$statement->execute(['Sandra', 'Aamodt']);// Passar os valores para os ?
+
+Usando named placeholders/lugares reservados
+
+$sql = 'insert into authors(first_name, last_name) values(:first_name,:last_name)';
+$statement->execute([
+        'first_name' => 'Henry',
+        'last_name' => 'Aaron'
+]);
+Opcionalmente:
+$statement->execute([
+        ':first_name' => 'Henry',
+        ':last_name' => 'Aaron'
+]);
+
+$stmt = $pdo->prepare("SELECT * FROM users WHERE sex=?");
+$stmt->execute([$sex]);
+$data = $stmt->fetchAll();
+
+ou encadeados
+$data = $pdo->prepare($sql)->execute($params)->fetch();
+
+

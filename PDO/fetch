@@ -1,0 +1,12 @@
+Fetch Single Row
+$stmt = $pdo->prepare("SELECT id, name, age FROM myTable WHERE name = ?");
+$stmt->execute([$_POST['name']]);
+$arr = $stmt->fetch();
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+$user = pdo($pdo, "SELECT * FROM users WHERE email=?", [$email])->fetch();
+// getting many rows from the table
+
+

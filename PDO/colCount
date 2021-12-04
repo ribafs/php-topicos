@@ -1,0 +1,10 @@
+Contar campos de tabela/consulta
+
+$dbh = new PDO('mysql:host=localhost;dbname=testes', 'root', 'root');
+
+$sth = $dbh->query("SELECT * FROM clientes");
+//$sth = $dbh->query("SELECT nome, email FROM clientes");
+$count = $sth->columnCount();
+
+echo 'Campos '.$count;
+

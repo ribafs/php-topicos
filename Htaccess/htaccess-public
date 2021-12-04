@@ -1,0 +1,6 @@
+# Redirecionar para a pasta /public
+
+Options -Indexes -MultiViews
+
+RewriteEngine On
+RewriteRule (.*) /public/$1 [L,QSA]

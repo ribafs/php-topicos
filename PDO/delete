@@ -1,0 +1,13 @@
+$stmt = $pdo->prepare("DELETE FROM myTable WHERE id = ?");
+$stmt->execute([$_SESSION['id']]);
+$stmt = null;
+
+$id = $_POST['id'];
+    $sql = "DELETE FROM  $tabela WHERE id = :id";
+    $sth = $pdo->prepare($sql);
+    $sth->bindParam(':id', $id, PDO::PARAM_INT);   
+    if( $sth->execute()){
+        print "<script>alert('Registro excluído com sucesso!');location='index.php';</script>";
+    }else{
+        print "Erro ao exclur o registro!<br><br>";
+    }

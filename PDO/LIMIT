@@ -1,0 +1,9 @@
+$sql = 'SELECT * FROM '.$this->table.' LIMIT 1';// Torna a consulta mais rápida
+
+if($sgbd == 'mysql'){
+    $results = $pdo->prepare("SELECT * FROM clientes ORDER BY id LIMIT $start, $row_limit");
+}else if($sgbd == 'pgsql'){
+    $results = $pdo->prepare("SELECT * FROM clientes ORDER BY id LIMIT $row_limit OFFSET $start");
+}
+
+

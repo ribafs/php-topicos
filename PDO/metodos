@@ -1,0 +1,18 @@
+function pdo($pdo, $sql, $args = NULL)
+{
+    if (!$args)
+    {
+         return $pdo->query($sql);
+    }
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($args);
+    return $stmt;
+}
+
+pdo($pdo, "INSERT INTO users VALUES (null, ?,?,?)", [$name, $email, $password]);
+// named placeholders are also welcome though I find them a bit too verbose
+pdo($pdo, "UPDATE users SET name=:name WHERE id=:id", ['id'=>$id, 'name'=>$name]);
+// using a sophisticated fetch mode, indexing the returned array by id
+$indexed = pdo($pdo, "SELECT id, name FROM users")->fetchAll(PDO::FETCH_KEY_PAIR);
+
+

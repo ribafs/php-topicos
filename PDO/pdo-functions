@@ -1,0 +1,137 @@
+<?php
+/**
+ * Created by PhpStorm. * User: Faizan Khan  * Date: 1/2/2018  * Time: 10:51 AM
+*/
+
+/*Script Motive: The purpose of the file is to present different PDO Functions for DML and DDL operations
+Sample Table
+Table Name: UserTbl
+Columns: Id, UserName, Email, RecordAddDate
+*/
+
+//Configuration -Start
+
+$localhost = "127.0.0.1";
+$root = "yourDBuserName";
+$rootpass = "yourPassword";
+$dbName = "yourDBName";
+$connPDO = new PDO("mysql:host=$localhost;dbname=$dbName",$root,$rootpass);
+
+//Configuration - END
+
+function Insert(){
+
+    global $connPDO;
+
+    $sql = "INSERT INTO UserTbl (userName, Email, RecordAddDate) VALUES (:UserName, :Email, :RecordAddDate)";
+
+    $queryInsert = $connPDO->prepare($sql);
+    /*
+    Query vs Execute function
+    query:: runs a standard SQL statement and requires you to properly escape all data to avoid SQL Injections and other issues.
+    execute:: runs a prepared statement which allows you to bind parameters to avoid the need to escape or quote the parameters.
+    execute will also perform better if you are repeating a query multiple times. Example of prepared statements:
+    Best practice is to stick with prepared statements and execute for increased security.
+    Source :: https://stackoverflow.com/questions/4700623/pdos-query-vs-execute
+    */
+
+    ///Getting current date
+    date_default_timezone_set("Asia/Karachi");
+    $recordAddDateTime = date('Y-m-d H:i:s');
+
+    $binds = array(
+        ':CorrectionDetails' =>     $_POST["UserName"],//Getting data from post request
+        ':CorrectionStartDate' =>   $_POST["Email"],
+        ':CorrectionASAP' =>        $$recordAddDateTime
+    );
+
+    $querySuccess = $queryInsert->execute($binds);
+
+    echo $querySuccess;
+}
+
+function Update(){
+    global $connPDO;
+
+    $sql = "Update UserTbl SET
+                userName  =   :UserName,
+                Email     =   :Email,
+                WHERE Id =    :Id";
+
+    $queryInsert = $connPDO->prepare($sql);//PDO::prepare — Prepares a statement for execution and returns a statement object
+    /*
+    Prepares an SQL statement to be executed by the PDOStatement::execute() method. The SQL statement can contain zero or more named (:name) or question mark (?) parameter markers
+    for which real values will be substituted when the statement is executed. You cannot use both named and question mark parameter markers within the same SQL statement;
+    pick one or the other parameter style. Use these parameters to bind any user-input, do not include the user-input directly in the query.
+    */
+
+    ///Getting current date
+    date_default_timezone_set("Asia/Karachi");
+    $recordAddDateTime = date('Y-m-d H:i:s');
+
+    $binds = array(
+        ':CorrectionDetails' =>     $_POST["UserName"],//Getting data from post request
+        ':CorrectionStartDate' =>   $_POST["Email"],
+
+    );
+
+    $querySuccess = $queryInsert->execute($binds);
+
+    echo $querySuccess;
+
+}
+
+function Delete(){
+    global $connPDO;
+    $id = 1;//Sample Id, you can pass parameter or you can get it pass it through post request
+    $deleteSql ="DELETE FROM UserTbl WHERE Id= :Id";
+    $query = $connPDO->prepare($deleteSql);
+    $query->bindParam(":Id", $id);
+    echo $query->execute();//if
+}
+
+function SelectAll(){
+    global $connPDO;
+    $selectSql = "SELECT * FROM UserTbl";
+    $queryExecuted = $connPDO->query($selectSql); //PDO::query — Executes an SQL statement, returning a result set as a PDOStatement object
+    $array = $queryExecuted->fetchAll(PDO::FETCH_ASSOC); //PDOStatement::fetchAll — Returns an array containing all of the result set rows
+                                                         //PDO::FETCH_ASSOC: returns an array indexed by column name as returned in your result set
+    $json = json_encode($array);
+    echo $json;
+
+}
+
+function SelectById(){
+    global $connPDO;
+    $userId = 1;
+    $selectSql = "SELECT * FROM UserTbl WHERE 	Id = $userId";
+    $queryExecuted = $connPDO->query($selectSql);
+    $array = $queryExecuted->fetchAll(PDO::FETCH_ASSOC);//PDO::FETCH_ASSOC tells PDO to return the result as an associative array.
+    $json = json_encode($array);
+    echo $json;
+}
+
+function SecureSelectById(){
+    global $connPDO;
+
+    $selectSql = "SELECT * FROM UserTbl WHERE Id = :userId AND Email=:email";
+    $statement = $connPDO->prepare($selectSql);
+    $statement->execute(array(':userId'=>1, ':email'=>'abc@live.com'));
+    $array = $statement->fetchAll();
+    $json = json_encode($array);
+    echo $json;
+}
+
+function GetSingleValue(){
+    global $connPDO;
+    $sql = "SELECT Count(*) TotalUser FROM UserTbl";
+    $q = $connPDO->query($sql);
+    $f = $q->fetch();//PDOStatement::fetch — Fetches the next row from a result set
+    $result = $f["TotalUser"];//Get Specfic Cloumn
+    echo $result;
+
+}
+
+?>
+https://gist.github.com/MuhammadFaizanKhan/65e44a64563e05c2b7bcb2e3ac0bf27a
+

@@ -1,0 +1,20 @@
+passar o terceiro parâmetro no filter_input pra não deixar passar nenhum código malicios
+
+filter_input(INPUT_GET, 'loj_prod', FILTER_DEFAULT | FILTER_SANITIZE_NUMBER_INT)
+
+<?php
+$search_html = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+$search_url = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_ENCODED);
+echo "You have searched for $search_html.\n";
+echo "<a href='?search=$search_url'>Search again.</a>";
+
+var_dump(filter_var('bob@example.com', FILTER_VALIDATE_EMAIL));
+var_dump(filter_var('example.com', FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED));
+
+if (!filter_input(INPUT_GET, "email", FILTER_VALIDATE_EMAIL)) {
+    echo("Email is not valid");
+} else {
+    echo("Email is valid");
+}
+
+

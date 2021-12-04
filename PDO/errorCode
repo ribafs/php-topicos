@@ -1,0 +1,8 @@
+
+$dbh = new PDO('mysql:host=localhost;dbname=testes', 'root', 'root');// Erros aqui devem ser capturados com try/catch
+
+$err = $dbh->prepare('SELECT skull FROM bones');// Tabela não existe
+$err->execute();
+
+echo "\nPDOStatement::errorCode(): ";
+print $err->errorCode();

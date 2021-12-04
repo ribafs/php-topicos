@@ -1,0 +1,8 @@
+	// Número de campos da tabela atual
+    // LIMIT 1 Torna a consulta mais rápida, caso apenas retorne um registro
+	public function numFields(){
+        $sql = 'SELECT * FROM '.$this->table.' LIMIT 1';
+		$sth = $this->pdo->query($sql);
+		return $sth->columnCount();
+	}
+

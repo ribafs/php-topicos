@@ -1,0 +1,10 @@
+Para que o site possa ser acessado com ribafs.org e não somente com www.ribafs.org
+Adicionar ao .htaccess do raiz do site:
+
+
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.ribamar\.net.br$ [NC]
+RewriteRule ^(.*)$ http://ribamar.net.br/$1 [R=301,L]
+
+Crédito:
+https://julianoaugusto.com/noticias/33-programe-seu-site-para-nao-usar-www

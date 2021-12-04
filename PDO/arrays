@@ -1,0 +1,100 @@
+/* Executar um prepared statement passando um array de valores sem os placeholders (':nome') */
+
+/* Execute a prepared statement by passing an array of insert values */
+$calories = 150;
+$colour = 'red';
+$sth = $dbh->prepare('SELECT name, colour, calories
+    FROM fruit
+    WHERE calories < ? AND colour = ?');
+$sth->execute(array($calories, $colour));// Pra cá vem os parâmetros do where acima:calories e colour
+
+
+/* Execute a prepared statement by passing an array of insert values */
+$calories = 150;
+$colour = 'red';
+$sth = $dbh->prepare('SELECT name, colour, calories
+   FROM fruit
+   WHERE calories < :calories AND colour = :colour');
+$sth->execute(array('calories' => $calories, 'colour' => $colour));
+
+
+$anarray = array(42 => "foo", 101 => "bar");
+$statement = $dbo->prepare("SELECT * FROM table WHERE col1 = ? AND col2 = ?");
+
+//This will not work
+$statement->execute($anarray);
+
+//Do this to make it work
+$statement->execute(array_values($anarray));
+
+
+$data = array(
+  array('name' => 'John', 'age' => '25'),
+  array('name' => 'Wendy', 'age' => '32')
+);
+
+try {
+  $pdo = new PDO('sqlite:myfile.sqlite');
+}
+
+catch(PDOException $e) {
+  die('Unable to open database connection');
+}
+
+$insertStatement = $pdo->prepare('insert into mytable (name, age) values (:name, :age)');
+
+// start transaction
+$pdo->beginTransaction();
+
+foreach($data as &$row) {
+  $insertStatement->execute($row);
+}
+
+// end transaction
+$pdo->commit(); 
+
+
+//UPDATE OPERATION
+$var1 = 'value1';
+$var2 = 'value2';
+$varint = 00;//integer value
+
+$query = "UPDATE table_name SET col1=(:value1), col2=(:value2) WHERE col3=(:value3)";
+$sql = $db->prepare($query);
+$sql->execute(['value1'=>$var1, 'value2'=>$var2, 'value3'=>$var3]);
+echo "UPDATED";
+
+
+/* Executar um prepared statement passando um array de valores sem os placeholders (':nome') */
+$sth = $dbh->prepare('SELECT name, colour, calories
+    FROM fruit
+    WHERE calories < ? AND colour = ?');
+$sth->execute(array(150, 'red'));
+$red = $sth->fetchAll();
+$sth->execute(array(175, 'yellow'));
+$yellow = $sth->fetchAll();
+
+/* Executar um prepared statement passando um array de valores */
+$sql = 'SELECT name, colour, calories
+    FROM fruit
+    WHERE calories < :calories AND colour = :colour';
+$sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+$sth->execute(array(':calories' => 150, ':colour' => 'red'));
+$red = $sth->fetchAll();
+$sth->execute(array(':calories' => 175, ':colour' => 'yellow'));
+$yellow = $sth->fetchAll();
+
+
+prepare statement inside loop:
+for($i=0; $i<1000; $i++) {
+    $rs = $pdo->prepare("SELECT `id` FROM `admins` WHERE `groupID` = :groupID AND `id` <> :id");
+    $rs->execute([':groupID' => $group, ':id' => $id]);
+}
+
+
+prepare statement outside loop:
+$rs = $pdo->prepare("SELECT `id` FROM `admins` WHERE `groupID` = :groupID AND `id` <> :id");
+for($i=0; $i<1000; $i++) {
+    $rs->execute([':groupID' => $group, ':id' => $id]);
+}
+

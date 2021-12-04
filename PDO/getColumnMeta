@@ -1,0 +1,69 @@
+$dbh = new PDO('mysql:host=localhost;dbname=testes', 'root', 'root');
+$select = $DB->query('SELECT COUNT(*) FROM clientes');
+$meta = $select->getColumnMeta(0);
+var_dump($meta);
+
+
+<?php
+/**
+  * Converts columns from strings to types according to 
+  * PDOStatement::columnMeta
+  * http://stackoverflow.com/a/9952703/3006989
+  * 
+  * @param PDOStatement $st
+  * @param array $assoc returned by PDOStatement::fetch with PDO::FETCH_ASSOC
+  * @return copy of $assoc with matching type fields
+  */
+ public static function convertToNativeTypes(PDOStatement $statement, $rows)
+ {
+     for ($i = 0; $columnMeta = $statement->getColumnMeta($i); $i++) {
+         $type = $columnMeta['native_type'];
+         switch ($type) {
+             case 'DECIMAL':
+             case 'TINY':
+             case 'SHORT':
+             case 'LONG':
+             case 'LONGLONG':
+             case 'INT24':
+                 if (isset($rows[$columnMeta['name']])) {
+                     $rows[$columnMeta['name']] = $rows[$columnMeta['name']] + 0;
+                 } else {
+                     if (is_array($rows) || $rows instanceof Traversable) {
+                         foreach ($rows as &$row) {
+                             if (isset($row[$columnMeta['name']])) {
+                                 $row[$columnMeta['name']] = $row[$columnMeta['name']] + 0;
+                             }
+                         }
+                     }
+                 }
+                 break;
+             case 'DATETIME':
+             case 'DATE':
+             case 'TIMESTAMP':
+                 // convert to date type?
+                 break;
+                 // default: keep as string
+         }
+     }
+     return $rows;
+ }
+?>
+
+$tomet = $sth->getColumnMeta($column_index);
+$tomet['type'] = $this->_translateNativeType($tomet['native_type']);
+
+private function _translateNativeType($orig) {
+    $trans = array(
+        'VAR_STRING' => 'string',
+        'STRING' => 'string',
+        'BLOB' => 'blob',
+        'LONGLONG' => 'int',
+        'LONG' => 'int',
+        'SHORT' => 'int',
+        'DATETIME' => 'datetime',
+        'DATE' => 'date',
+        'DOUBLE' => 'real',
+        'TIMESTAMP' => 'timestamp'
+    );
+    return $trans[$orig];
+}

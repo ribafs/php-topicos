@@ -1,0 +1,7 @@
+Método REQUEST
+
+Um array associativo que por padrão contém informações de $_GET, $_POST e $_COOKIE. 
+
+O método REQUEST é usado quando temos dúvida qual método foi usado no form.
+Ele detecta as variáveis enviadas pelo form independente de que sejam GET ou POST
+

@@ -1,0 +1,27 @@
+try {
+  $stmt = $pdo->prepare("INSERT INTO myTable (name, age) VALUES (?, ?)");
+  if(!$stmt->execute(['Justin', 18])) throw new Exception('Stmt Failed');
+  $stmt = null;
+
+  $stmt = $pdo->prepare("SELECT * FROM myTable WHERE power_level > ?");
+  if(!$stmt->execute([9000])) throw new Exception('Stmt Failed');
+  $arr = $stmt->fetchAll();
+  $stmt = null;
+
+  try {
+    $pdo->beginTransaction();
+    $stmt1 = $pdo->prepare("INSERT INTO myTable (name, state) VALUES (?, ?)");
+    $stmt2 = $pdo->prepare("UPDATE myTable SET age = ? WHERE id = ?");
+    if(!$stmt1->execute(['Rick', 'NY'])) throw new Exception('Stmt 1 Failed');
+    else if(!$stmt2->execute([27, 139])) throw new Exception('Stmt 2 Failed');
+    $stmt1 = null;
+    $stmt2 = null;
+    $pdo->commit();
+  } catch(Exception $e) {
+    $pdo->rollback();
+    throw $e;
+  }
+} catch(Exception $e) {
+  error_log($e);
+  exit('Error message that user can understand for this page');
+}

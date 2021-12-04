@@ -1,0 +1,25 @@
+Devolver todos os nomes iniciados com kn
+
+SELECT nome FROM clientes WHERE nome REGEXP '^kn';
+
+Listar todos os nomes terminados com co
+
+SELECT nome FROM clientes WHERE nome REGEXP 'co$';
+
+Listar todos os nomes de clientes que contém ste, mesmo que não como mostrado
+
+SELECT nome FROM clientes WHERE nome REGEXP 'ste?'; 
+
+Saída:
+
+Steel Hampton
+Sylvester Mckay
+Austin Grimes
+Nasim Stevenson
+Aristotle Summers
+
+Listar todos os clientes cujos nomes contenham ax ou ro
+
+SELECT nome FROM clientes WHERE nome REGEXP 'ax|ro'
+
+

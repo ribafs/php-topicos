@@ -1,0 +1,7 @@
+Exec - Executar uma instrução SQL e devolver o número de registros afectados
+
+$dbh = new PDO('mysql:host=localhost;dbname=testes', 'root', 'root');
+
+$count = $dbh->exec("DELETE FROM clientes WHERE id>50");
+print("Deleted $count rows.\n");
+

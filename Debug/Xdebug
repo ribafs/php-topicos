@@ -1,0 +1,22 @@
+
+
+sudo nano /etc/php/7.4/mods-available/xdebug.ini
+
+end_extension=xdebug.so
+;profilling
+ ;xdebug.profiler_enable = 1
+ ;xdebug.extended_info = 0
+ ;xdebug.remote_enable = 0
+ ;xdebug.profiler_output_dir=/tmp
+;debug
+ xdebug.remote_enable=1
+ xdebug.remote_handler=dbgp
+ xdebug.remote_mode=req
+ xdebug.remote_host=localhost
+ xdebug.remote_port=9000
+ xdebug.extended_info=1
+
+
+Geralmente as informações do Xdebug são bem claras e logo percebemos o erro. Mas acontece algumas vezes de isso não acontecer assim tão claramente. Nestes casos precisamos ler com atenção e calma as informações mostradas pelo Xdebug, que nos ajudarão a solucionar o problema.
+
+Nem sempre a solução está apontada na faixa em laranja. Ele pode vir indicada logo abaixo.

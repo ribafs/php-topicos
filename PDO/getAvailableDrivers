@@ -1,0 +1,8 @@
+<?php
+
+$drivers = PDO::getAvailableDrivers();
+
+foreach($drivers as $drv){
+    print $drv.'<br>';
+}
+

@@ -1,0 +1,127 @@
+bindValue()
+
+public PDOStatement::bindValue ( mixed $parameter , mixed $value , int $data_type = PDO::PARAM_STR ) : bool
+
+<?php
+
+$pdo = require 'connect.php';
+
+$sql = 'insert into authors(first_name, last_name) values(?,?)';
+
+$statement = $pdo->prepare($sql);
+
+$statement->bindValue(':first_name', 'Nick');
+$statement->bindValue(':last_name', 'Abadzis');
+
+$statement->execute();
+
+
+<?php
+
+$pdo = require 'connect.php';
+
+$sql = 'insert into authors(first_name, last_name) values(:first_name,:last_name)';
+$statement = $pdo->prepare($sql);
+
+$author = [
+        'first_name' => 'Chris',
+        'last_name' => 'Abani',
+];
+
+$statement->bindValue(':first_name', $author['first_name']);
+$statement->bindValue(':last_name', $author['last_name']);
+
+// change the author variable
+$author['first_name'] = 'Tom';
+$author['last_name'] = 'Abate';
+
+// execute the query with value Chris Abani
+$statement->execute();
+
+$stmt = $pdo->prepare("SELECT full_name, gender FROM myTable WHERE id > ? LIMIT ?");
+$stmt->bindValue(1, 39, PDO::PARAM_INT);
+$stmt->bindValue(2, 23, PDO::PARAM_INT);
+$arr = $stmt->fetchAll();
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+$id = 25; //Final value
+$stmt = $pdo->prepare("SELECT * FROM myTable WHERE id < ?");
+$stmt->bindValue($id);
+$id = 98;
+$id = 39;
+$stmt->execute();
+$arr = $stmt->fetchAll();
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+bindParam()
+
+public PDOStatement::bindParam ( mixed $parameter , mixed &$variable , int $data_type = PDO::PARAM_STR , int $length = ? , mixed $driver_options = ? ) : bool
+
+Exemplo:
+
+<?php
+
+$pdo = require 'connect.php';
+
+$sql = 'insert into authors(first_name, last_name)
+        values(:first_name,:last_name)';
+
+$statement = $pdo->prepare($sql);
+
+$author = [
+        'first_name' => 'Chris',
+        'last_name' => 'Abani',
+];
+
+$statement->bindParam(':first_name', $author['first_name']);
+$statement->bindParam(':last_name', $author['last_name']);
+
+// change the author variable
+$author['first_name'] = 'Tom';
+$author['last_name'] = 'Abate';
+
+// execute the query with value Tom Abate
+$statement->execute();
+https://www.phptutorial.net/php-pdo/php-prepared-statement/
+
+$id = 25;
+$stmt = $pdo->prepare("SELECT * FROM myTable WHERE id < ?");
+$stmt->bindParam($id);
+$id = 98;
+$id = 39; //Final value
+$stmt->execute();
+$arr = $stmt->fetchAll();
+if(!$arr) exit('No rows');
+var_export($arr);
+$stmt = null;
+
+Diferença entre bindValue e bindParam
+
+No bindParam() o argumento esperado é uma referência (variável ou constante) e não pode ser um tipo primitivo como uma string ou número solto, retorno de função/método. Já bindValue() pode receber referências e valores como argumento.
+
+Com bindParam:
+
+$sex = 'male';
+$s = $dbh->prepare('SELECT name FROM students WHERE sex = :sex');
+$s->bindParam(':sex', $sex);
+$sex = 'female';
+$s->execute(); // Executado quando $sex = 'female'
+
+Com bindValue:
+
+$sex = 'male';
+$s = $dbh->prepare('SELECT name FROM students WHERE sex = :sex');
+$s->bindValue(':sex', $sex);
+$sex = 'female';
+$s->execute(); // Executado quando $sex = 'male'
+
+
+No bindParam() o argumento esperado é uma referência(variável ou constante) não pode ser um tipo primitivo como uma string ou número solto, retorno de função/método. bindValue() pode receber referências e valores como argumento, basicamente é isso.
+
+O bindParam sempre uso com variareis se usar uma valor tipo 'nome usuário' no lugar da variável vai dar erro pq ele não aceita valor, e o bindValue é o inverso eu uso o valor mesmo 'nome do usuário' ,1235456. Eu entendo assim bindParam parâmetros por referencia usa variável, bindValue valores mesmo direto sem uso de variável. Posso não estar certo em alguns pontos mas espero ajudar a clarear um pouco.
+https://pt.stackoverflow.com/questions/87384/qual-a-diferen%C3%A7a-entre-bindparam-e-bindvalue
+

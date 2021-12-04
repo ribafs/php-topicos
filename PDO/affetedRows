@@ -1,0 +1,5 @@
+$stmt = $pdo->prepare("UPDATE myTable SET name = ? WHERE id = ?");
+$stmt->execute([$_POST['name'], $_SESSION['id']]);
+echo $stmt->rowCount();
+$stmt = null;
+

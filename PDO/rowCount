@@ -1,0 +1,4 @@
+// getting the number of affected rows from DELETE/UPDATE/INSERT
+$deleted = pdo($pdo, "DELETE FROM users WHERE id=?", [$id])->rowCount();
+
+

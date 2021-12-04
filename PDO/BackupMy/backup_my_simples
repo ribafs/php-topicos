@@ -1,0 +1,15 @@
+<?php
+// Backup do banco de dados do site
+
+$dbhost = 'localhost';          //local aonde se encontra o banco de dados
+$dbuser = 'root';    // usuário do banco de dados
+$dbpass = 'root';         // senha do usuário do banco de dados
+$dbname = 'testes';   // nome do banco de dados
+
+// rotina que faz o backup não mexer
+
+$backupfile = 'Autobackup_' . date("Ymd") . '.sql';
+$backupzip = $backupfile . '.tar.gz';
+system("mysqldump -h $dbhost -u $dbuser -p$dbpass --lock-tables $dbname > $backupfile");
+system("tar -czvf $backupzip $backupfile");
+
